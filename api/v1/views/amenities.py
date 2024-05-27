@@ -1,33 +1,33 @@
 #!/usr/bin/python3
-""" State APIRest
+""" Amenities APIRest
 """
 
 from models import storage
-from models.state import State
+from models.amenity import Amenity
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 
 
-@app_views.route('/states', methods=['GET'])
-def list_dict():
-    """ list of an objetc in a dict form
+@app_views.route('/amenities', methods=['GET'])
+def amenity_list():
+    """ list of objetc in dict form
     """
     lista = []
-    dic = storage.all('State')
+    dic = storage.all('Amenity')
     for elem in dic:
         lista.append(dic[elem].to_dict())
     return (jsonify(lista))
 
 
-@app_views.route('/states/<state_id>', methods=['GET', 'DELETE'])
-def state_id(state_id):
-    """ realize the specific action depending on method
+@app_views.route('/amenities/<amenity_id>', methods=['GET', 'DELETE'])
+def amenity_id(amenity_id):
+    """ realize the specific action depending on a method
     """
     lista = []
-    dic = storage.all('State')
+    dic = storage.all('Amenity')
     for elem in dic:
         var = dic[elem].to_dict()
-        if var["id"] == state_id:
+        if var["id"] == amenity_id:
             if request.method == 'GET':
                 return (jsonify(var))
             elif request.method == 'DELETE':
@@ -38,8 +38,8 @@ def state_id(state_id):
     abort(404)
 
 
-@app_views.route('/states', methods=['POST'])
-def add_item():
+@app_views.route('/amenities', methods=['POST'])
+def amenity_item():
     """ add a new item
     """
     if not request.json:
@@ -49,18 +49,18 @@ def add_item():
         if "name" not in content.keys():
             return jsonify("Missing name"), 400
         else:
-            new_state = State(**content)
-            new_state.save()
-            return (jsonify(new_state.to_dict()), 201)
+            new_amenity = Amenity(**content)
+            new_amenity.save()
+            return (jsonify(new_amenity.to_dict()), 201)
 
 
-@app_views.route('/states/<state_id>', methods=['PUT'])
-def update_item(state_id):
+@app_views.route('/amenities/<amenity_id>', methods=['PUT'])
+def update_amenity(amenity_id):
     """ update item
     """
-    dic = storage.all("State")
+    dic = storage.all("Amenity")
     for key in dic:
-        if dic[key].id == state_id:
+        if dic[key].id == amenity_id:
             if not request.json:
                 return jsonify("Not a JSON"), 400
             else:
